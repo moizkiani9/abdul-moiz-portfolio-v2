@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Abdul Moiz — Software Developer / Data & Automation</title>
+<meta name="description" content="Portfolio of Abdul Moiz — Software Engineering graduate who builds Python-based data, automation, and AI-assisted systems.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0A0D10;
+    --bg-panel: #12171C;
+    --bg-panel-alt: #171D23;
+    --bg-raised: #1B2229;
+    --border: #232B32;
+    --border-soft: #1B2228;
+    --text: #E6EDF3;
+    --text-dim: #8A97A3;
+    --text-faint: #566068;
+    --amber: #FFB454;
+    --amber-dim: #B9843C;
+    --blue: #6FA8FF;
+    --green: #6FCF97;
+    --red: #E5534B;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+    --sans: 'IBM Plex Sans', system-ui, sans-serif;
+  }
+
+  *{ box-sizing: border-box; margin:0; padding:0; }
+  html{ scroll-behavior: smooth; }
+  body{
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection{ background: var(--amber); color: #0A0D10; }
+
+  a{ color: inherit; text-decoration: none; }
+  ul{ list-style: none; }
+
+  /* subtle scanline / grid texture on the whole page */
+  body::before{
+    content:"";
+    position: fixed; inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+    background-size: 42px 42px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrap{ max-width: 920px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+  :focus-visible{ outline: 2px solid var(--amber); outline-offset: 3px; }
+
+  /* ---------- Top window bar ---------- */
+  .titlebar{
+    position: sticky; top:0; z-index: 50;
+    background: rgba(10,13,16,0.88);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+  }
+  .titlebar-inner{
+    max-width: 920px; margin: 0 auto; padding: 0 24px;
+    display:flex; align-items:center; justify-content: space-between;
+    height: 48px;
+  }
+  .dots{ display:flex; gap:7px; }
+  .dot{ width:10px; height:10px; border-radius:50%; }
+  .dot.red{ background:#E5534B44; border:1px solid #E5534B88; }
+  .dot.yellow{ background:#FFB45444; border:1px solid #FFB45488; }
+  .dot.green{ background:#6FCF9744; border:1px solid #6FCF9788; }
+  .prompt-path{
+    font-family: var(--mono); font-size: 12.5px; color: var(--text-dim);
+    letter-spacing: 0.02em;
+  }
+  .prompt-path b{ color: var(--amber); font-weight: 500; }
+  nav.crumbs{ display:flex; gap:18px; font-family: var(--mono); font-size: 12.5px; }
+  nav.crumbs a{ color: var(--text-dim); transition: color .15s ease; white-space:nowrap; }
+  nav.crumbs a:hover{ color: var(--amber); }
+  .menu-btn{ display:none; background:none; border:1px solid var(--border); color: var(--text-dim); font-family: var(--mono); font-size:12px; padding:6px 10px; border-radius:4px; }
+
+  @media (max-width: 720px){
+    nav.crumbs{ display:none; }
+    .menu-btn{ display:block; }
+  }
+
+  /* ---------- Hero / boot sequence ---------- */
+  .hero{ padding: 76px 0 64px; }
+  .boot{
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 28px 28px 24px;
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--text-dim);
+    box-shadow: 0 20px 60px -30px rgba(0,0,0,0.6);
+  }
+  .boot .line{ margin-bottom: 10px; opacity: 0; animation: reveal 0.4s ease forwards; }
+  .boot .line:last-child{ margin-bottom: 0; }
+  @keyframes reveal{ to{ opacity: 1; } }
+  .boot .prompt-sym{ color: var(--green); margin-right: 8px; }
+  .boot .cmd{ color: var(--text); }
+  .boot .out{ color: var(--text-dim); padding-left: 20px; display:block; margin-top:4px; }
+  .boot .out b{ color: var(--amber); font-weight: 600; }
+  .boot .out .accent-blue{ color: var(--blue); }
+  .cursor{
+    display:inline-block; width:8px; height:15px; background: var(--amber);
+    vertical-align: -2px; margin-left: 4px;
+    animation: blink 1s steps(1) infinite;
+  }
+  @keyframes blink{ 50%{ opacity: 0; } }
+
+  .hero h1{
+    font-family: var(--mono);
+    font-size: clamp(28px, 5vw, 44px);
+    font-weight: 700;
+    margin-top: 30px;
+    letter-spacing: -0.01em;
+  }
+  .hero h1 .accent{ color: var(--amber); }
+  .hero .role{
+    font-family: var(--mono); font-size: 15px; color: var(--blue);
+    margin-top: 10px;
+  }
+  .hero p.lede{
+    margin-top: 18px; max-width: 58ch; color: var(--text-dim); font-size: 15.5px;
+  }
+  .hero .cta-row{ display:flex; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
+  .btn{
+    font-family: var(--mono); font-size: 13px; padding: 11px 18px; border-radius: 6px;
+    border: 1px solid var(--border); transition: all .15s ease; display:inline-flex; align-items:center; gap:8px;
+  }
+  .btn.primary{ background: var(--amber); color: #171106; border-color: var(--amber); font-weight: 600; }
+  .btn.primary:hover{ background: #ffc478; }
+  .btn.ghost{ color: var(--text); }
+  .btn.ghost:hover{ border-color: var(--amber-dim); color: var(--amber); }
+
+  /* ---------- Section scaffolding ---------- */
+  section{ padding: 56px 0; border-top: 1px solid var(--border-soft); }
+  .sec-head{ display:flex; align-items: baseline; gap: 12px; margin-bottom: 30px; }
+  .sec-tag{ font-family: var(--mono); color: var(--text-faint); font-size: 13px; }
+  .sec-title{ font-family: var(--mono); font-size: 22px; font-weight: 600; }
+  .sec-title .dot-prefix{ color: var(--amber); }
+
+  /* ---------- About ---------- */
+  .about-grid{ display:grid; grid-template-columns: 1.3fr 1fr; gap: 40px; }
+  @media (max-width: 720px){ .about-grid{ grid-template-columns: 1fr; } }
+  .about-grid p{ color: var(--text-dim); font-size: 15.5px; margin-bottom: 14px; }
+  .about-grid p strong{ color: var(--text); font-weight: 500; }
+  .field-list{ background: var(--bg-panel); border: 1px solid var(--border); border-radius: 8px; padding: 18px 20px; }
+  .field-list .row{ display:flex; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--border-soft); font-size: 13.5px; }
+  .field-list .row:last-child{ border-bottom: none; }
+  .field-list .k{ font-family: var(--mono); color: var(--text-faint); }
+  .field-list .v{ color: var(--text); text-align: right; }
+  .field-list .v.link:hover{ color: var(--amber); }
+
+  /* ---------- Experience ---------- */
+  .timeline{ position: relative; padding-left: 28px; }
+  .timeline::before{ content:""; position:absolute; left: 5px; top: 6px; bottom: 6px; width: 1px; background: var(--border); }
+  .job{ position: relative; padding-bottom: 34px; }
+  .job:last-child{ padding-bottom: 0; }
+  .job::before{
+    content:""; position:absolute; left: -28px; top: 4px; width: 11px; height: 11px;
+    border-radius: 50%; background: var(--bg); border: 2px solid var(--amber);
+  }
+  .job-head{ display:flex; justify-content: space-between; flex-wrap: wrap; gap: 8px 16px; align-items: baseline; }
+  .job-title{ font-weight: 600; font-size: 16px; }
+  .job-org{ color: var(--blue); font-size: 14px; }
+  .job-time{ font-family: var(--mono); font-size: 12px; color: var(--text-faint); white-space: nowrap; }
+  .job ul{ margin-top: 10px; }
+  .job li{ color: var(--text-dim); font-size: 14.5px; padding-left: 18px; position: relative; margin-bottom: 7px; }
+  .job li::before{ content:"›"; position:absolute; left:0; color: var(--amber-dim); }
+
+  /* ---------- Projects ---------- */
+  .projects{ display: grid; gap: 20px; }
+  .proj-card{
+    background: var(--bg-panel); border: 1px solid var(--border); border-radius: 8px;
+    overflow: hidden; transition: border-color .15s ease;
+  }
+  .proj-card:hover{ border-color: var(--amber-dim); }
+  .proj-bar{
+    display:flex; align-items:center; justify-content: space-between; gap: 12px;
+    padding: 12px 18px; background: var(--bg-panel-alt); border-bottom: 1px solid var(--border);
+    font-family: var(--mono); font-size: 12px; color: var(--text-faint);
+  }
+  .proj-bar .badge{
+    padding: 3px 9px; border-radius: 100px; border: 1px solid var(--border);
+    font-size: 11px; letter-spacing: 0.03em;
+  }
+  .badge.personal{ color: var(--green); border-color: #6FCF9744; }
+  .badge.client{ color: var(--blue); border-color: #6FA8FF44; }
+  .proj-body{ padding: 20px 22px 22px; }
+  .proj-title{ font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+  .proj-body p{ color: var(--text-dim); font-size: 14.5px; margin-bottom: 14px; }
+  .stack-row{ display:flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+  .chip{
+    font-family: var(--mono); font-size: 11.5px; color: var(--text-dim);
+    border: 1px solid var(--border); padding: 4px 10px; border-radius: 4px; background: var(--bg-raised);
+  }
+  .proj-meta{ display:flex; gap: 22px; font-family: var(--mono); font-size: 12px; color: var(--text-faint); flex-wrap: wrap; }
+  .proj-meta b{ color: var(--text-dim); font-weight: 500; }
+
+  /* ---------- Skills ---------- */
+  .skills-grid{ display:grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+  @media (max-width: 640px){ .skills-grid{ grid-template-columns: 1fr; } }
+  .skill-panel{ background: var(--bg-panel); border: 1px solid var(--border); border-radius: 8px; padding: 18px 20px; }
+  .skill-panel h3{
+    font-family: var(--mono); font-size: 12.5px; color: var(--amber); letter-spacing: 0.04em;
+    margin-bottom: 12px; text-transform: uppercase;
+  }
+  .tag-row{ display:flex; flex-wrap: wrap; gap: 8px; }
+  .tag{ font-size: 13px; color: var(--text-dim); background: var(--bg-raised); border: 1px solid var(--border); padding: 5px 11px; border-radius: 5px; }
+
+  /* ---------- Learning ---------- */
+  .learn-grid{ display:grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+  @media (max-width: 640px){ .learn-grid{ grid-template-columns: 1fr; } }
+  .learn-card{ background: var(--bg-panel); border: 1px solid var(--border); border-radius: 8px; padding: 20px; }
+  .learn-top{ display:flex; align-items:center; justify-content: space-between; margin-bottom: 10px; }
+  .learn-top h3{ font-size: 15.5px; font-weight: 600; }
+  .status-pill{
+    font-family: var(--mono); font-size: 10.5px; padding: 3px 9px; border-radius: 100px;
+    background: rgba(255,180,84,0.12); color: var(--amber); border: 1px solid rgba(255,180,84,0.3);
+    letter-spacing: 0.03em;
+  }
+  .learn-card p{ color: var(--text-dim); font-size: 14px; }
+
+  /* ---------- Contact ---------- */
+  .contact-panel{
+    background: var(--bg-panel); border: 1px solid var(--border); border-radius: 8px;
+    padding: 30px 28px; font-family: var(--mono);
+  }
+  .contact-panel .lead{ color: var(--text-dim); font-size: 14.5px; margin-bottom: 22px; font-family: var(--sans); max-width: 52ch; }
+  .contact-links{ display:grid; gap: 10px; }
+  .contact-links a{
+    display:flex; align-items:center; justify-content: space-between;
+    padding: 13px 16px; border: 1px solid var(--border); border-radius: 6px;
+    font-size: 13.5px; color: var(--text); transition: all .15s ease; background: var(--bg-raised);
+  }
+  .contact-links a:hover{ border-color: var(--amber-dim); color: var(--amber); transform: translateX(2px); }
+  .contact-links .arrow{ color: var(--text-faint); }
+
+  /* ---------- Footer status bar ---------- */
+  footer{
+    border-top: 1px solid var(--border);
+    padding: 16px 0;
+    font-family: var(--mono); font-size: 11.5px; color: var(--text-faint);
+  }
+  .status-bar{ display:flex; justify-content: space-between; flex-wrap: wrap; gap: 8px 20px; max-width: 920px; margin: 0 auto; padding: 0 24px; }
+  .status-bar .live{ color: var(--green); }
+  .status-bar .live::before{ content:"●"; margin-right: 6px; font-size: 9px; }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="titlebar">
+    <div class="titlebar-inner">
+      <div style="display:flex; align-items:center; gap:16px;">
+        <div class="dots"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div>
+        <span class="prompt-path"><b>abdul@moiz</b>:~/portfolio$</span>
+      </div>
+      <nav class="crumbs">
+        <a href="#about">about</a>
+        <a href="#experience">experience</a>
+        <a href="#projects">projects</a>
+        <a href="#skills">skills</a>
+        <a href="#learning">learning</a>
+        <a href="#contact">contact</a>
+      </nav>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <section class="hero" id="top">
+      <div class="boot" id="boot">
+        <div class="line" style="animation-delay:0.05s"><span class="prompt-sym">$</span><span class="cmd">whoami</span></div>
+        <div class="line" style="animation-delay:0.35s"><span class="out">abdul_moiz — software engineering graduate, <b>security-minded</b></span></div>
+        <div class="line" style="animation-delay:0.65s"><span class="prompt-sym">$</span><span class="cmd">cat status.conf</span></div>
+        <div class="line" style="animation-delay:0.95s"><span class="out">role      : <span class="accent-blue">Data Analyst Intern</span> @ Auditor General of Pakistan</span></div>
+        <div class="line" style="animation-delay:1.15s"><span class="out">location  : Islamabad, Pakistan</span></div>
+        <div class="line" style="animation-delay:1.35s"><span class="out">building  : Yaro · Homekey AI voice agent</span></div>
+        <div class="line" style="animation-delay:1.55s"><span class="out">studying  : CEH · HackTheBox labs</span><span class="cursor"></span></div>
+      </div>
+
+      <h1>Abdul Moiz<span class="accent">.</span></h1>
+      <div class="role">Software Developer — Data, Automation &amp; AI-Assisted Systems</div>
+      <p class="lede">Software Engineering graduate from SZABIST Islamabad who builds real, working systems: a Django-based gig-matching app from scratch, and an AI voice agent wired into a RAG pipeline with FAISS and live APIs for a real estate client. Comfortable with Python automation, data cleaning at scale, and using AI tools like Claude to move fast — on top of internship experience in Windows/Linux systems and structured data workflows.</p>
+      <div class="cta-row">
+        <a href="#projects" class="btn primary">./view-projects</a>
+        <a href="#contact" class="btn ghost">./get-in-touch</a>
+      </div>
+    </section>
+
+    <section id="about">
+      <div class="sec-head"><span class="sec-tag">01</span><h2 class="sec-title"><span class="dot-prefix">$</span> ./about</h2></div>
+      <div class="about-grid">
+        <div>
+          <p>I'm a <strong>Software Engineering graduate (2022–2026)</strong> from SZABIST Islamabad who likes being handed a rough outcome and figuring out how to build it — end-to-end, with minimal hand-holding. I build my own projects from scratch: a Django-based gig-matching app, and an AI voice agent wired into a RAG pipeline using FAISS and live APIs for a real estate client.</p>
+          <p>I lean heavily on <strong>Python for automation and data work</strong> — cleaning, structuring, and cross-checking datasets — and I use AI coding tools like <strong>Claude</strong> to move faster, while still testing and fixing what they produce rather than shipping blind. I also have internship experience troubleshooting Windows/Linux systems and supporting structured data workflows in an audit/compliance environment.</p>
+          <p>Right now I'm working through my <strong>CEH certification</strong> and running labs on <strong>HackTheBox</strong>, building out security fundamentals alongside the development work.</p>
+        </div>
+        <div class="field-list">
+          <div class="row"><span class="k">education</span><span class="v">BS Software Engineering<br>SZABIST Islamabad, 2022–2026</span></div>
+          <div class="row"><span class="k">location</span><span class="v">Islamabad, Pakistan</span></div>
+          <div class="row"><span class="k">focus</span><span class="v">Data, Automation &amp; AI-Assisted Dev</span></div>
+          <div class="row"><span class="k">email</span><span class="v link"><a href="mailto:moizkiani02@gmail.com">moizkiani02@gmail.com</a></span></div>
+          <div class="row"><span class="k">phone</span><span class="v">+92 325 5179918</span></div>
+          <div class="row"><span class="k">linkedin</span><span class="v link"><a href="https://linkedin.com/in/abdul-moizk" target="_blank" rel="noopener">/in/abdul-moizk</a></span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="experience">
+      <div class="sec-head"><span class="sec-tag">02</span><h2 class="sec-title"><span class="dot-prefix">$</span> ./experience.log</h2></div>
+      <div class="timeline">
+        <div class="job">
+          <div class="job-head">
+            <div>
+              <div class="job-title">Data Analyst (Intern)</div>
+              <div class="job-org">Auditor General of Pakistan</div>
+            </div>
+            <div class="job-time">Jun 2026 — Present</div>
+          </div>
+          <ul>
+            <li>Maintain and analyze operational datasets to support audit and compliance reporting, applying structured, detail-oriented review methods.</li>
+            <li>Document findings clearly for both technical and non-technical stakeholders, building habits directly applicable to accurate operational reporting.</li>
+            <li>Self-initiated an internal data-tracking tool to organize and cross-check compliance records beyond assigned tasks.</li>
+          </ul>
+        </div>
+        <div class="job">
+          <div class="job-head">
+            <div>
+              <div class="job-title">Development Intern</div>
+              <div class="job-org">AJ&amp;K Information Technology Board</div>
+            </div>
+            <div class="job-time">Feb 2026 — Apr 2026</div>
+          </div>
+          <ul>
+            <li>Supported system setup, configuration, and maintenance tasks across hybrid IT environments.</li>
+            <li>Gained direct exposure to workplace IT infrastructure and troubleshooting workflows.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="projects">
+      <div class="sec-head"><span class="sec-tag">03</span><h2 class="sec-title"><span class="dot-prefix">$</span> ls ./projects</h2></div>
+      <div class="projects">
+
+        <div class="proj-card">
+          <div class="proj-bar">
+            <span>~/projects/rehab-gaming</span>
+            <span class="badge personal">final year project</span>
+          </div>
+          <div class="proj-body">
+            <div class="proj-title">Rehab Gaming — AI Motion Tracking &amp; Rehabilitation Platform</div>
+            <p>A real-time pose-tracking pipeline that integrates hardware sensors to monitor patient movement during rehabilitation exercises. Automated feedback loops handle repetition counting and posture validation, giving patients instant corrective feedback without a human supervisor in the loop. Owned end-to-end — design, implementation, testing, and documentation — as a solo final-year deliverable, presented and defended before faculty.</p>
+            <div class="stack-row">
+              <span class="chip">Python</span>
+              <span class="chip">MediaPipe</span>
+              <span class="chip">OpenCV</span>
+              <span class="chip">Hardware Sensors</span>
+            </div>
+            <div class="proj-meta">
+              <span><b>role:</b> Solo Developer</span>
+              <span><b>type:</b> Final Year Project</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="proj-card">
+          <div class="proj-bar">
+            <span>~/projects/agp-audit-system</span>
+            <span class="badge client">internal platform</span>
+          </div>
+          <div class="proj-body">
+            <div class="proj-title">AGP Audit System — Payroll &amp; Pension Irregularity Audit Platform</div>
+            <p>A full-stack audit platform with a configurable rules engine that detects policy violations across 180+ employee payroll and pension records. Includes a REST API driving a case-management workflow (Flagged → Under Review → Confirmed → Recovered) and a real-time dashboard for audit findings. Validated against a synthetic seeded dataset with 100% detection on deterministic compliance rules.</p>
+            <div class="stack-row">
+              <span class="chip">FastAPI</span>
+              <span class="chip">React</span>
+              <span class="chip">TypeScript</span>
+              <span class="chip">PostgreSQL</span>
+            </div>
+            <div class="proj-meta">
+              <span><b>role:</b> Developer</span>
+              <span><b>domain:</b> Audit &amp; Compliance</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="proj-card">
+          <div class="proj-bar">
+            <span>~/projects/auditteam-ai</span>
+            <span class="badge personal">internal tool</span>
+          </div>
+          <div class="proj-body">
+            <div class="proj-title">AuditTeam AI — Intelligent Audit Team Recommendation System</div>
+            <p>A 5-stage ML pipeline — data generation, feature engineering, cosine-similarity recommendation, K-Means clustering, and explainability — that matches audit staff to engagements. Integrates the Mistral LLM API for natural-language team-building queries, with a keyword-based fallback parser for reliability without API access. Wrapped in a Streamlit dashboard (Team Builder, Talent Map, Directory tabs) so non-technical staff can use the recommendation engine directly.</p>
+            <div class="stack-row">
+              <span class="chip">Python</span>
+              <span class="chip">scikit-learn</span>
+              <span class="chip">Mistral LLM API</span>
+              <span class="chip">Streamlit</span>
+            </div>
+            <div class="proj-meta">
+              <span><b>role:</b> Developer</span>
+              <span><b>domain:</b> Audit &amp; Compliance</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="proj-card">
+          <div class="proj-bar">
+            <span>~/projects/yaro</span>
+            <span class="badge personal">personal project</span>
+          </div>
+          <div class="proj-body">
+            <div class="proj-title">Yaro — Hyperlocal Gig Matching App</div>
+            <p>A mobile app that connects people within a local radius who want to earn minimum wage doing short, real-world tasks. A requester posts a job — like needing help moving house — and nearby people can accept it as a helper. Solo-designed and developed end-to-end.</p>
+            <div class="stack-row">
+              <span class="chip">Django</span>
+              <span class="chip">Python</span>
+              <span class="chip">Mobile</span>
+            </div>
+            <div class="proj-meta">
+              <span><b>role:</b> Solo Developer</span>
+              <span><b>type:</b> Personal / Founder Project</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="proj-card">
+          <div class="proj-bar">
+            <span>~/projects/homekey-voice-agent</span>
+            <span class="badge client">client project</span>
+          </div>
+          <div class="proj-body">
+            <div class="proj-title">Homekey Enterprise — AI Voice Agent</div>
+            <p>Built an AI voice agent for Homekey Enterprise, a real estate company, handling both inbound and outbound calls. The agent is connected to a RAG-based knowledge system so responses stay grounded in the company's actual property and process data rather than generic answers.</p>
+            <div class="stack-row">
+              <span class="chip">RAG</span>
+              <span class="chip">FAISS</span>
+              <span class="chip">ElevenLabs (voice)</span>
+              <span class="chip">Python</span>
+            </div>
+            <div class="proj-meta">
+              <span><b>role:</b> Developer</span>
+              <span><b>domain:</b> Real Estate</span>
+              <span><b>calls:</b> Inbound + Outbound</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="skills">
+      <div class="sec-head"><span class="sec-tag">04</span><h2 class="sec-title"><span class="dot-prefix">$</span> cat skills.conf</h2></div>
+      <div class="skills-grid">
+        <div class="skill-panel">
+          <h3>IT Support &amp; Troubleshooting</h3>
+          <div class="tag-row">
+            <span class="tag">Windows</span><span class="tag">Linux (Ubuntu/Kali)</span>
+            <span class="tag">Hardware/Software Diagnosis</span><span class="tag">TCP/IP</span>
+            <span class="tag">DNS</span><span class="tag">DHCP</span>
+          </div>
+        </div>
+        <div class="skill-panel">
+          <h3>Networking &amp; Systems</h3>
+          <div class="tag-row">
+            <span class="tag">Active Directory (awareness)</span>
+            <span class="tag">NIST</span><span class="tag">CIS Controls</span>
+            <span class="tag">Nmap</span><span class="tag">Wireshark</span>
+          </div>
+        </div>
+        <div class="skill-panel">
+          <h3>Records &amp; Documentation</h3>
+          <div class="tag-row">
+            <span class="tag">Incident/Lab Write-ups</span>
+            <span class="tag">Zendesk</span><span class="tag">Jira</span>
+            <span class="tag">Technical Record-Keeping</span>
+          </div>
+        </div>
+        <div class="skill-panel">
+          <h3>Productivity, Data &amp; Automation</h3>
+          <div class="tag-row">
+            <span class="tag">Excel</span><span class="tag">Word</span><span class="tag">Outlook</span>
+            <span class="tag">Teams</span><span class="tag">Python Scripting</span>
+          </div>
+        </div>
+        <div class="skill-panel">
+          <h3>Building &amp; AI-Assisted Dev</h3>
+          <div class="tag-row">
+            <span class="tag">Python</span><span class="tag">Django</span><span class="tag">REST APIs</span>
+            <span class="tag">FAISS / Vector DBs</span><span class="tag">RAG Pipelines</span>
+            <span class="tag">Git/GitHub</span><span class="tag">Claude / AI Coding Tools</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="learning">
+      <div class="sec-head"><span class="sec-tag">05</span><h2 class="sec-title"><span class="dot-prefix">$</span> ./currently-learning</h2></div>
+      <div class="learn-grid">
+        <div class="learn-card">
+          <div class="learn-top"><h3>CEH — Certified Ethical Hacker</h3><span class="status-pill">in progress</span></div>
+          <p>Working through CEH coursework to build formal grounding in offensive security methodology alongside the hands-on IT experience from internships.</p>
+        </div>
+        <div class="learn-card">
+          <div class="learn-top"><h3>HackTheBox Labs</h3><span class="status-pill">active</span></div>
+          <p>Running practical labs to apply networking, enumeration, and exploitation concepts in a hands-on environment.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact">
+      <div class="sec-head"><span class="sec-tag">06</span><h2 class="sec-title"><span class="dot-prefix">$</span> ./contact.sh</h2></div>
+      <div class="contact-panel">
+        <p class="lead">Open to development, data/automation, and AI-assisted building roles. Reach out directly — I usually reply within a day.</p>
+        <div class="contact-links">
+          <a href="mailto:moizkiani02@gmail.com"><span>moizkiani02@gmail.com</span><span class="arrow">→</span></a>
+          <a href="tel:+923255179918"><span>+92 325 5179918</span><span class="arrow">→</span></a>
+          <a href="https://linkedin.com/in/abdul-moizk" target="_blank" rel="noopener"><span>linkedin.com/in/abdul-moizk</span><span class="arrow">→</span></a>
+          <a href="#top"><span>Islamabad, Pakistan</span><span class="arrow">→</span></a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <div class="status-bar">
+      <span class="live">status: open to work</span>
+      <span>location: Islamabad, PK</span>
+      <span>last updated: 2026</span>
+    </div>
+  </footer>
+
+</body>
+</html>
